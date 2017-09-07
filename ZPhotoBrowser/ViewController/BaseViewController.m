@@ -7,7 +7,7 @@
 //
 
 #import "BaseViewController.h"
-
+#import "BrowserViewController.h"
 #import "CameraViewController.h"
 #import "UIViewController+NavigationBar.h"
 
@@ -18,12 +18,13 @@
 @implementation BaseViewController
 //特定的页面隐藏状态栏
 -(BOOL)prefersStatusBarHidden{
-    if ([self isKindOfClass:[CameraViewController class]]) {
+    if ([self isKindOfClass:[CameraViewController class]] || [self isKindOfClass:[BrowserViewController class]]) {
         return YES;
     }else{
         return NO;
     }
 }
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setLeftNavigationBarToBack];
@@ -31,6 +32,8 @@
 
     //防止push 之后 pop回来 位置变化
     self.automaticallyAdjustsScrollViewInsets = NO;
+    
+
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

@@ -117,7 +117,9 @@
 }
 #pragma mark - 退出相机
 -(void)exitCameraBtnAction:(UIButton *)button{
+    
     [self.camera stopCameraCapture];
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"refreshAlbumView" object:nil userInfo:nil];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 #pragma mark - Lazy Load

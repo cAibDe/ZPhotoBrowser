@@ -8,6 +8,7 @@
 
 #import "MainViewController.h"
 #import "CameraViewController.h"
+#import "BrowserViewController.h"
 
 #import <Photos/Photos.h>
 
@@ -36,15 +37,24 @@
 @implementation MainViewController
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-    [self getAlbumAuthorized];
+//     PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
+//    if (status == PHAuthorizationStatusAuthorized) {
+//        [self getAllAlbums];
+//    }else{
+//        [self getAlbumAuthorized];
+//    }
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self getAlbumAuthorized];
     [self creatCollectionView];
-
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(refreshAlbum) name:@"refreshAlbumView" object:nil];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
+}
+- (void)refreshAlbum{
+    [self getAlbumAuthorized];
 }
 - (void)creatCollectionView{
     UICollectionViewFlowLayout *flowLayOut = [[UICollectionViewFlowLayout alloc]init];
@@ -90,7 +100,9 @@
         [self presentViewController:cameraVC animated:YES completion:nil];
     }else{
         //进入相册浏览
-        
+        [BrowserViewController show:self type:BrowserShowTypePush index:indexPath.item-1 imagesBlock:^NSArray *{
+            return self.localAllMediAassetFetchResult;
+        }];
     }
 }
 #pragma mark - 处理相册授权
@@ -128,6 +140,8 @@
 }
 #pragma mark - 利用PhotoKit 获取所有的相册
 - (void)getAllAlbums{
+    [self.smartFetchResultArray removeAllObjects];
+    [self.smartFetchResultTitlt removeAllObjects];
     PHFetchResult *smartAlbums = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:nil];
     for (PHCollection *collection in smartAlbums) {
         if ([collection isKindOfClass:[PHCollection class]]) {
